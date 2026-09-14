@@ -1,0 +1,691 @@
+HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarDogs - FOB Setup & Placement Templates</title>
+    <style>
+        :root {
+            --bg-dark: #0f1115;
+            --bg-card: #181b22;
+            --bg-card-hover: #212530;
+            --accent-orange: #ff6b00;
+            --accent-blue: #00b0ff;
+            --text-main: #e0e6ed;
+            --text-muted: #8c9ba5;
+            --border-color: #2a2f3d;
+            --radio-color: #ff4d4d;
+            --hab-color: #00e676;
+            --ammo-color: #ffea00;
+            --tow-color: #00b0ff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0 20px;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: var(--accent-orange);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Map Selector Tabs */
+        .map-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tab-btn:hover {
+            background-color: var(--bg-card-hover);
+            border-color: var(--accent-orange);
+        }
+
+        .tab-btn.active {
+            background-color: var(--accent-orange);
+            color: #000;
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 15px rgba(255, 107, 0, 0.4);
+        }
+
+        /* Map Content Area */
+        .map-content {
+            display: none;
+        }
+
+        .map-content.active {
+            display: block;
+        }
+
+        .map-header {
+            background-color: var(--bg-card);
+            border-left: 4px solid var(--accent-orange);
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+
+        .map-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .map-header p {
+            color: var(--text-muted);
+        }
+
+        /* Template Grid Layout */
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .template-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .template-card-header {
+            background-color: #13151b;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .template-card-header h3 {
+            font-size: 1.2rem;
+            color: var(--accent-orange);
+        }
+
+        .tag {
+            background-color: rgba(0, 176, 255, 0.15);
+            color: var(--accent-blue);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* Interactive Visual Blueprint Canvas */
+        .visual-blueprint {
+            position: relative;
+            height: 260px;
+            background-color: #0b0c0e;
+            border-bottom: 1px solid var(--border-color);
+            background-image: 
+                radial-gradient(#222733 1px, transparent 1px),
+                linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 20px 20px, 20px 20px, 20px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .blueprint-legend {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: space-around;
+            background: rgba(15, 17, 21, 0.85);
+            padding: 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .dot.radio { background-color: var(--radio-color); box-shadow: 0 0 6px var(--radio-color); }
+        .dot.hab { background-color: var(--hab-color); box-shadow: 0 0 6px var(--hab-color); }
+        .dot.ammo { background-color: var(--ammo-color); box-shadow: 0 0 6px var(--ammo-color); }
+        .dot.tow { background-color: var(--tow-color); box-shadow: 0 0 6px var(--tow-color); }
+
+        /* Blueprint Element Markers */
+        .node {
+            position: absolute;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.7rem;
+            color: #000;
+        }
+
+        .node:hover {
+            transform: scale(1.3);
+            z-index: 10;
+        }
+
+        .node-radio {
+            width: 22px;
+            height: 22px;
+            background-color: var(--radio-color);
+            box-shadow: 0 0 12px var(--radio-color);
+        }
+
+        .node-hab {
+            width: 28px;
+            height: 28px;
+            background-color: var(--hab-color);
+            box-shadow: 0 0 12px var(--hab-color);
+        }
+
+        .node-ammo {
+            width: 18px;
+            height: 18px;
+            background-color: var(--ammo-color);
+            box-shadow: 0 0 8px var(--ammo-color);
+        }
+
+        .node-tow {
+            width: 20px;
+            height: 20px;
+            background-color: var(--tow-color);
+            box-shadow: 0 0 10px var(--tow-color);
+        }
+
+        .structure {
+            position: absolute;
+            border: 2px dashed #444c5e;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #525f78;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .template-card-body {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .spec-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .spec-title {
+            font-size: 0.85rem;
+            color: var(--accent-orange);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .spec-desc {
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        /* Quick Reference Loadout Matrix */
+        .loadout-section {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .loadout-section h3 {
+            font-size: 1.4rem;
+            color: var(--accent-orange);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #13151b;
+            color: var(--accent-blue);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        tr:hover td {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 50px;
+        }
+
+        footer a {
+            color: var(--accent-orange);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>WarDogs Tactical FOB Templates</h1>
+        <p>Optimized Forward Operating Base blueprints for Bakurani, Ozeti, and Zestafona</p>
+    </header>
+
+    <!-- Map Selector Tabs -->
+    <div class="map-selector">
+        <button class="tab-btn active" onclick="openMap('bakurani', this)">Bakurani</button>
+        <button class="tab-btn" onclick="openMap('ozeti', this)">Ozeti</button>
+        <button class="tab-btn" onclick="openMap('zestafona', this)">Zestafona</button>
+    </div>
+
+    <!-- BAKURANI MAP SECTION -->
+    <div id="bakurani" class="map-content active">
+        <div class="map-header">
+            <h2>Bakurani Maps & Tactics</h2>
+            <p>12x12 km large-scale terrain featuring dense pine forests, rolling hills, open farmland, and a massive central industrial/factory control zone.</p>
+        </div>
+
+        <div class="template-grid">
+            <!-- Bakurani Template 1 -->
+            <div class="template-card">
+                <div class="template-card-header">
+                    <h3>Template A: Industrial Fortress</h3>
+                    <span class="tag">Factory Zone</span>
+                </div>
+                <div class="visual-blueprint">
+                    <div class="structure" style="width: 200px; height: 160px;">Main Factory</div>
+                    <div class="node node-radio" style="top: 85px; left: 140px;" title="Radio - Hidden Lower Ground Floor">R</div>
+                    <div class="node node-hab" style="top: 130px; left: 200px;" title="HAB - Adjacent Warehouse">H</div>
+                    <div class="node node-ammo" style="top: 110px; left: 175px;" title="Ammo Crate - Main Staircase">A</div>
+                    <div class="node node-tow" style="top: 60px; left: 230px;" title="TOW / Heavy Weapons - Catwalk">T</div>
+
+                    <div class="blueprint-legend">
+                        <div class="legend-item"><span class="dot radio"></span> Radio</div>
+                        <div class="legend-item"><span class="dot hab"></span> HAB</div>
+                        <div class="legend-item"><span class="dot ammo"></span> Ammo</div>
+                        <div class="legend-item"><span class="dot tow"></span> Weapons</div>
+                    </div>
+                </div>
+                <div class="template-card-body">
+                    <div class="spec-item">
+                        <span class="spec-title">Primary Objective</span>
+                        <span class="spec-desc">Hold the central 2 km Control Zone and lock down open farmland pushes.</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-title">Radio Placement</span>
+                        <span class="spec-desc">Lower ground floor / cellar behind solid non-destructible concrete walls.</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-title">HAB & Defense</span>
+                        <span class="spec-desc">Placed inside the adjoining warehouse under metal roofing to prevent air/mortar wipes. TOWs on upper catwalks facing outer access roads.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bakurani Template 2 -->
+            <div class="template-card">
+                <div class="template-card-header">
+                    <h3>Template B: Hillside Overwatch</h3>
+                    <span class="tag">High Ground</span>
+                </div>
+                <div class="visual-blueprint">
+                    <div class="structure" style="width: 240px; height: 80px; top: 40px; border-style: dotted;">Dense Tree Line</div>
+                    <div class="node node-radio" style="top: 140px; left: 110px;" title="Radio - Rock Face Concealment">R</div>
+                    <div class="node node-hab" style="top: 65px; left: 160px;" title="HAB - Forest Canopy Cover">H</div>
+                    <div class="node node-ammo" style="top: 75px; left: 200px;" title="Ammo Crate">A</div>
+                    <div class="node node-tow" style="top: 170px; left: 210px;" title="Mortar / TOW - Crest Line">T</div>
+
+                    <div class="blueprint-legend">
+                        <div class="legend-item"><span class="dot radio"></span> Radio</div>
+                        <div class="legend-item"><span class="dot hab"></span> HAB</div>
+                        <div class="legend-item"><span class="dot ammo"></span> Ammo</div>
+                        <div class="legend-item"><span class="dot tow"></span> Mortar/TOW</div>
+                    </div>
+                </div>
+                <div class="template-card-body">
+                    <div class="spec-item">
+                        <span class="spec-title">Primary Objective</span>
+                        <span class="spec-desc">Control sightlines over valley roads and provide long-range mortar/recon support.</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-title">Radio Placement</span>
+                        <span class="spec-desc">Tucked into natural rock crevices below the ridge crest line to avoid valley sightlines.</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-title">HAB & Defense</span>
+                        <span class="spec-desc">Nested inside the dense pine tree line. Heavy weapons placed along ridge crest with HMGs covering natural slope choke points.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- OZETI MAP SECTION -->
+    <div id="ozeti" class="map-content">
+        <div class="map-header">
+            <h2>Ozeti Maps & Tactics</h2>
+            <p>1400 m high-density control zone bisected by a central river, strategic bridges, and tactical control towers.</p>
+        </div>
+
+        <div class="template-grid">
+            <!-- Ozeti Template 1 -->
+            <div class="template-card">
+                <div class="template-card-header">
+                    <h3>Template A: Tower Redoubt</h3>
+                    <span class="tag">Control Zone</span>
+                </div>
+                <div class="visual-blueprint">
+                    <div class="structure" style="width: 110px; height: 110px; left: 60px;">Central Tower</div>
+                    <div class="structure" style="width: 100px; height: 80px; left: 190px;">Brick Outbuilding</div>
+                    <div class="node node-radio" style="top: 100px; left: 95px;" title="Radio - Ground Floor Interior">R</div>
+                    <div class="node node-hab" style="top: 105px; left: 225px;" title="HAB - Indoor Outbuilding">H</div>
+                    <div class="node node-ammo" style="top: 130px; left: 105px;" title="Ammo Crate - Ladder Base">A</div>
+                    <div class="node node-tow" style="top: 60px; left: 210px;" title="Drill Site / Magnet">T</div>
+
+                    <div class="blueprint-legend">
+                        <div class="legend-item"><span class="dot radio"></span> Radio</div>
+                        <div class="legend-item"><span class="dot hab"></span> HAB</div>
+                        <div class="legend-item"><span class="dot ammo"></span> Ammo</div>
+                        <div class="legend-item"><span class="dot tow"></span> Drill Site</div>
+                    </div>
+                </div>
+                <div class="template-card-body">
+                    <div class="spec-item">
+                        <span class="spec-title">Primary Objective</span>
+                        <span class="spec-desc">Secure the central Tower, capture activation codes, and lock down Hot Zone score magnets.</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-title">Radio Placement</span>
+                        <span class="spec-desc">Inside the ground-floor chamber of the main Tower structure or walled compound.</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-title">HAB & Defense</span>
+                        <span class="spec-desc">Built in neighboring brick courtyard away from sniper lanes. Double-layered sandbags on stairwells with a Drill Site near FOB edge.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ozeti Template 2 -->
+            <div class="template-card">
+                <div class="template-card-header">
+                    <h3>Template B: Bridgehead Defense</h3>
+                    <span class="tag">River Chokepoint</span>
+                </div>
+                <div class="visual-blueprint">
+                    <div class="structure" style="width: 260px; height: 30px; top: 120px; background: rgba(0,176,255,0.1); border-color: var(--accent-blue);">River Approach</div>
+                    <div class="structure" style="width: 90px; height: 70px; top: 35px; left: 60px;">Riverfront</div>
+                    <div class="node node-radio" style="top: 60px; left: 90px;" title="Radio - Interior Multi-Story">R</div>
+                    <div class="node node-hab" style="top: 50px; left: 180px;" title="HAB - Ground Level (No Windows)">H</div>
+                    <div class="node node-ammo" style="top: 75px; left: 160px;" title="Ammo Crate">A</div>
+                    <div class="node node-tow" style="top: 100px; left: 130px;" title="HMG Nests - Bridge Facing">T</div>
+
+                    <div class="blueprint-legend">
+                        <div class="legend-item"><span class="dot radio"></span> Radio</div>
+                        <div class="legend-item"><span class="dot hab"></span> HAB</div>
+                        <div class="legend-item"><span class="dot ammo"></span> Ammo</div>
+                        <div class="legend-item"><span class="dot tow"></span> HMG Nest</div>
+                    </div>
+                </div>
+                <div class="template-card-body">
+                    <div class="spec-item">
+                        <span class="spec-title">Primary Objective</span>
+                        <span class="spec-desc">Intercept enemy pushes across the primary bridge from Barcelona and Malaga routes.</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-title">Radio Placement</span>
+                        <span class="spec-desc">Concealed inside a multi-story riverfront building on the embankment.</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-title">HAB & Defense</span>
+                        <span class="spec-desc">Ground-level indoor placement facing away from the river. Dual HMG nests zeroed on bridge crossings with razor wire along water banks.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ZESTAFONA MAP SECTION -->
+    <div id="zestafona" class="map-content">
+        <div class="map-header">
+            <h2>Zestafona Maps & Tactics</h2>
+            <p>Multi-sector region defined by elevated vantage points, compound settlements, and strategic tower grids.</p>
+        </div>
+
+        <div class="template-grid">
+            <!-- Zestafona Template 1 -->
+            <div class="template-card">
+                <div class="template-card-header">
+                    <h3>Template A: Compound Strongpoint</h3>
+                    <span class="tag">Settlement</span>
+                </div>
+                <div class="visual-blueprint">
+                    <div class="structure" style="width: 220px; height: 160px;">Walled Settlement Compound</div>
+                    <div class="node node-radio" style="top: 150px; left: 100px;" title="Radio - Enclosed Rear Room">R</div>
+                    <div class="node node-hab" style="top: 70px; left: 90px;" title="HAB - Inner Perimeter Bunker Roof">H</div>
+                    <div class="node node-ammo" style="top: 80px; left: 220px;" title="Ammo Crate - Entry Gate">A</div>
+                    <div class="node node-tow" style="top: 150px; left: 230px;" title="Automated Turret Platform">T</div>
+
+                    <div class="blueprint-legend">
+                        <div class="legend-item"><span class="dot radio"></span> Radio</div>
+                        <div class="legend-item"><span class="dot hab"></span> HAB</div>
+                        <div class="legend-item"><span class="dot ammo"></span> Ammo</div>
+                        <div class="legend-item"><span class="dot tow"></span> Turret/TOW</div>
+                    </div>
+                </div>
+                <div class="template-card-body">
+                    <div class="spec-item">
+                        <span class="spec-title">Primary Objective</span>
+                        <span class="spec-desc">Provide a durable spawn hub capable of sustaining intense, multi-faction firefights.</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-title">Radio Placement</span>
+                        <span class="spec-desc">Tucked into the rear corner room of the central walled compound behind high stone boundaries.</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-title">HAB & Defense</span>
+                        <span class="spec-desc">Positioned against inner perimeter wall under constructed bunker roofing. Ammo crates at every wall entrance with automated turrets on raised scaffolds.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zestafona Template 2 -->
+            <div class="template-card">
+                <div class="template-card-header">
+                    <h3>Template B: Scout & Mobile Drill Outpost</h3>
+                    <span class="tag">Flank & Score</span>
+                </div>
+                <div class="visual-blueprint">
+                    <div class="structure" style="width: 140px; height: 100px; left: 50px;">Rock Formation</div>
+                    <div class="node node-radio" style="top: 110px; left: 90px;" title="Radio - Hidden in Outcrop">R</div>
+                    <div class="node node-hab" style="top: 60px; left: 220px;" title="HAB - Small Foliage Footprint">H</div>
+                    <div class="node node-ammo" style="top: 90px; left: 200px;" title="Ammo Crate">A</div>
+                    <div class="node node-tow" style="top: 150px; left: 190px;" title="6000/6000 Fuel Drill Site">T</div>
+
+                    <div class="blueprint-legend">
+                        <div class="legend-item"><span class="dot radio"></span> Radio</div>
+                        <div class="legend-item"><span class="dot hab"></span> HAB</div>
+                        <div class="legend-item"><span class="dot ammo"></span> Ammo</div>
+                        <div class="legend-item"><span class="dot tow"></span> Drill Site</div>
+                    </div>
+                </div>
+                <div class="template-card-body">
+                    <div class="spec-item">
+                        <span class="spec-title">Primary Objective</span>
+                        <span class="spec-desc">Intercept enemy logistics and establish secondary Hot Zone scoring multipliers on sector flanks.</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-title">Radio Placement</span>
+                        <span class="spec-desc">Hidden within natural rock formations or isolated outbuildings on the sector periphery.</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-title">HAB & Defense</span>
+                        <span class="spec-desc">Minimized build footprint concealed under foliage. Features a fully fueled Drill Site (6000/6000) to pull score multipliers toward flank forces.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Reference Table Section -->
+    <div class="loadout-section">
+        <h3>FOB Deployment Resource Quick Reference</h3>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>FOB Type</th>
+                        <th>Construction Cost</th>
+                        <th>Ammo Cost</th>
+                        <th>Ideal Radio Placement</th>
+                        <th>Key Build Priorities</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Standard FOB</strong></td>
+                        <td>1,000</td>
+                        <td>1,000</td>
+                        <td>Indoor / Natural Cover</td>
+                        <td>1x HAB, 1x Ammo Crate, 1x HMG Nest</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Urban / Tower FOB</strong></td>
+                        <td>1,500</td>
+                        <td>500</td>
+                        <td>Interior non-destructible room</td>
+                        <td>1x Covered HAB, 2x Ammo Crates, Sandbag Chokepoints</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fortress / Drill FOB</strong></td>
+                        <td>3,000</td>
+                        <td>2,000</td>
+                        <td>Enclosed Courtyard / Lower Cellar</td>
+                        <td>1x Reinforced HAB, Drill Site, Mortar Pit, Heavy TOW</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <p>WarDogs Site Strategy Guide &bull; Built for Squad Leaders & Tactical Planners</p>
+    </footer>
+</div>
+
+<script>
+    function openMap(mapName, btn) {
+        // Hide all map content divs
+        const contents = document.querySelectorAll('.map-content');
+        contents.forEach(content => content.classList.remove('active'));
+
+        // Remove active class from all buttons
+        const buttons = document.querySelectorAll('.tab-btn');
+        buttons.forEach(button => button.classList.remove('active'));
+
+        // Show selected map content and mark button as active
+        document.getElementById(mapName).classList.add('active');
+        btn.classList.add('active');
+    }
+</script>
+
+</body>
+</html>
